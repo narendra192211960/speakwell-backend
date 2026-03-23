@@ -333,8 +333,9 @@ def upload_profile_picture():
         file.save(file_path)
         
         # update database
-        server_ip = Config.FLASK_HOST if Config.FLASK_HOST != "0.0.0.0" else "10.73.250.173"
-        image_url = f"http://{server_ip}:{Config.FLASK_PORT}/uploads/{filename}"
+        # Use the dynamic request host URL so it always matches the client's current IP
+        base_url = request.host_url.rstrip('/')
+        image_url = f"{base_url}/uploads/{filename}"
         
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -1467,11 +1468,14 @@ def create_tables():
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
+
+        # ✅ Enforce NO_AUTO_VALUE_ON_ZERO to prevent id=0 being inserted on XAMPP/MariaDB
+        cursor.execute("SET SESSION sql_mode = (SELECT REPLACE(@@SESSION.sql_mode, 'NO_AUTO_VALUE_ON_ZERO', ''))")
         
-        # Create users table if not exists (already exist but for completeness)
+        # Create users table if not exists
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(255) NOT NULL,
             email VARCHAR(255) UNIQUE NOT NULL,
             phone_number VARCHAR(20),
@@ -1480,7 +1484,7 @@ def create_tables():
             profile_picture VARCHAR(500) DEFAULT NULL,
             start_date DATE DEFAULT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
+        ) AUTO_INCREMENT=1
         """)
         
         # Add start_date column if it doesn't exist (for existing users)
@@ -1500,8 +1504,8 @@ def create_tables():
         # Create practice_attempts table
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS practice_attempts (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT NOT NULL,
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            user_id INT UNSIGNED NOT NULL,
             session_id VARCHAR(100) DEFAULT 'legacy_session',
             exercise_name VARCHAR(100) DEFAULT 'General Practice',
             expected_sentence TEXT,
@@ -1512,7 +1516,7 @@ def create_tables():
             feedback_tip TEXT,
             attempt_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-        )
+        ) AUTO_INCREMENT=1
         """)
         
         # Ensure new columns exist for existing installations
@@ -1536,26 +1540,26 @@ def create_tables():
         # Create schedules table
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS schedules (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT NOT NULL,
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            user_id INT UNSIGNED NOT NULL,
             scheduled_date VARCHAR(50),
             scheduled_time VARCHAR(50),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-        )
+        ) AUTO_INCREMENT=1
         """)
         
-        # Create/update notification_preferences table (new spec columns)
+        # Create/update notification_preferences table
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS notification_preferences (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT NOT NULL UNIQUE,
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            user_id INT UNSIGNED NOT NULL UNIQUE,
             daily_practice_reminder BOOLEAN DEFAULT FALSE,
             streak_milestone BOOLEAN DEFAULT FALSE,
             weekly_progress BOOLEAN DEFAULT FALSE,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-        )
+        ) AUTO_INCREMENT=1
         """)
 
         # Migrate old columns if they exist (idempotent)
@@ -1573,17 +1577,17 @@ def create_tables():
                 cursor.execute(f"ALTER TABLE notification_preferences DROP COLUMN `{drop_col}`")
             except: pass
 
-        # Create notification_logs table (aligned with CORE REQUIREMENTS)
+        # Create notification_logs table
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS notification_logs (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT NOT NULL,
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            user_id INT UNSIGNED NOT NULL,
             type VARCHAR(100),
             message TEXT,
             status VARCHAR(20) DEFAULT 'sent',
             sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-        )
+        ) AUTO_INCREMENT=1
         """)
         # Ensure 'type' column exists if 'notification_type' was used before
         try:
@@ -1742,6 +1746,27 @@ def debug_db():
         return jsonify({"preferences": prefs, "logs": logs})
     except Exception as e:
         return str(e)
+
+@app.route('/')
+def serve_index():
+    # Serve login.html as the entry point
+    return send_from_directory('../website/html', 'login.html')
+
+@app.route('/js/<path:path>')
+def serve_js(path):
+    return send_from_directory('../website/js', path)
+
+@app.route('/css/<path:path>')
+def serve_css(path):
+    return send_from_directory('../website/css', path)
+
+@app.route('/html/<path:path>')
+def serve_html(path):
+    return send_from_directory('../website/html', path)
+
+@app.route('/assets/<path:path>')
+def serve_assets(path):
+    return send_from_directory('../website/assets', path)
 
 if __name__ == '__main__':
     create_tables()
