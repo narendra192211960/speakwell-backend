@@ -49,6 +49,3 @@ out/
 .vercel
 .vscode/
 
-# --- Databases ---
-*.sqlite
-speakwell.sql
