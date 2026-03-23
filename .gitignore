@@ -50,6 +50,5 @@ out/
 .vscode/
 
 # --- Databases ---
-*.db
 *.sqlite
 speakwell.sql
