@@ -32,7 +32,7 @@ class Config:
     SMTP_HOST = os.environ.get("SMTP_HOST", "smtp.gmail.com")
     SMTP_PORT = int(os.environ.get("SMTP_PORT", 587))
     SMTP_USER = os.environ.get("SMTP_USER", "aispeakwell@gmail.com")
-    SMTP_APP_PASSWORD = os.environ.get("SMTP_APP_PASSWORD", "")
+    SMTP_APP_PASSWORD = os.environ.get("SMTP_APP_PASSWORD", "opmv mltb opvt zsvg")
 
     # Gemini API Configuration - Use a property to ensure we get latest env if needed
     @property

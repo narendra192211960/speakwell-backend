@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeakWell - Onboarding</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #818CF8;
+            --secondary: #ec4899;
+            --bg-color: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        /* --- Main Layout Wrapper --- */
+        .onboarding-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            min-height: 700px;
+            background: var(--surface);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05), border 1px solid var(--border-color);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- Left Side: Visual Feature Area --- */
+        .visual-panel {
+            flex: 1;
+            background: linear-gradient(135deg, #eef2ff 0%, #ede9fe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 40px;
+        }
+
+        /* Abstract soundwave/AI graphic background elements */
+        .visual-panel::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(79,70,229,0.1) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            top: -100px;
+            left: -100px;
+        }
+
+        .visual-panel::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(236,72,153,0.05) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            bottom: -50px;
+            right: -50px;
+        }
+
+        .graphic-container {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 32px;
+            padding: 60px;
+            box-shadow: 0 20px 40px rgba(79, 70, 229, 0.08);
+            text-align: center;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .graphic-icon {
+            width: 120px;
+            height: 120px;
+            color: var(--primary);
+            margin-bottom: 24px;
+            filter: drop-shadow(0 10px 15px rgba(79, 70, 229, 0.2));
+        }
+
+        .graphic-container h3 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* --- Right Side: Content Area --- */
+        .content-panel {
+            flex: 1;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Header / Nav */
+        .nav-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 60px;
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        .back-link svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Main Copy */
+        .step-indicator {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+            color: var(--text-main);
+        }
+
+        p.description {
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: var(--text-muted);
+            margin-bottom: 48px;
+            max-width: 480px;
+        }
+
+        /* Footer / Actions */
+        .action-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+
+        .progress-bar-container {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .progress-segment {
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .progress-segment.active {
+            width: 32px;
+            background: var(--primary);
+        }
+
+        .progress-segment:not(.active) {
+            width: 16px;
+        }
+
+        .next-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px -10px rgba(79, 70, 229, 0.5);
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -10px rgba(79, 70, 229, 0.6);
+            background: #4338ca;
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+            .onboarding-wrapper {
+                flex-direction: column;
+                min-height: auto;
+            }
+
+            .visual-panel {
+                padding: 60px 20px;
+                min-height: 350px;
+            }
+
+            .graphic-container {
+                padding: 40px;
+            }
+
+            .graphic-icon {
+                width: 80px;
+                height: 80px;
+            }
+
+            .content-panel {
+                padding: 40px 24px;
+            }
+
+            h1 {
+                font-size: 2.25rem;
+            }
+
+            .action-footer {
+                margin-top: 40px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .action-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 32px;
+            }
+            .next-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="onboarding-wrapper">
+        
+        <!-- Left Visual Side -->
+        <div class="visual-panel">
+            <div class="graphic-container">
+                <!-- Large Web Mic Icon -->
+                <svg class="graphic-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/>
+                </svg>
+                <h3>Analyzing Voice Edge...</h3>
+            </div>
+        </div>
+
+        <!-- Right Content Side -->
+        <div class="content-panel">
+            
+            <header class="nav-header">
+                <!-- Link to index.html -->
+                <a href="index.html" class="back-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Back
+                </a>
+            </header>
+
+            <main>
+                <span class="step-indicator">Step 1 of 5</span>
+                <h1>AI-Powered<br>Speech Training</h1>
+                <p class="description">
+                    Practice pronunciation with real-time feedback. Our AI analyzes your voice patterns securely in the browser and provides instant, personalized correction suggestions.
+                </p>
+            </main>
+
+            <footer class="action-footer">
+                
+                <!-- Web style progress bar segments -->
+                <div class="progress-bar-container">
+                    <div class="progress-segment active"></div>
+                    <div class="progress-segment"></div>
+                    <div class="progress-segment"></div>
+                    <div class="progress-segment"></div>
+                    <div class="progress-segment"></div>
+                </div>
+
+                <!-- ADDED: onclick event to navigate to step2.html -->
+                <button class="next-btn" onclick="window.location.href='step2.html'">
+                    Next Step
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </button>
+            </footer>
+
+        </div>
+    </div>
+
+</body>
+</html>

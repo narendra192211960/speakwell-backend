@@ -1,0 +1,91 @@
+<style>
+    .exercise-list { display: flex; flex-direction: column; gap: 16px; max-width: 800px; }
+    .exercise-item {
+        padding: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+    .ex-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+    .diff-easy { background: #dcfce7; color: #16a34a; }
+    .diff-medium { background: #fef3c7; color: #d97706; }
+    .diff-hard { background: #fee2e2; color: #ef4444; }
+</style>
+
+<div class="main-wrapper">
+    <main class="main-content">
+        <header class="page-header" style="display: flex; align-items: center; gap: 20px;">
+            <button class="back-btn" onclick="window.history.back()">
+
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <div>
+                <h1 id="categoryTitle" style="font-size: 1.8rem; font-weight: 800; color: var(--primary-dark);">Exercises</h1>
+                <p id="categoryDesc" style="color: var(--text-muted);">Select an exercise to begin your session.</p>
+            </div>
+        </header>
+
+        <div class="exercise-list" id="exerciseList">
+            <div style="text-align: center; padding: 40px; color: var(--text-muted);">Loading exercises...</div>
+        </div>
+    </main>
+</div>
+
+<script>
+    (async function initExercise() {
+        const category = localStorage.getItem('selected_category') || 'vowels';
+        const titleEl = document.getElementById('categoryTitle');
+        if(titleEl) titleEl.textContent = category.charAt(0).toUpperCase() + category.slice(1) + ' Exercises';
+
+        try {
+            const exercises = await API.getExercises();
+            if (exercises.status === 'success') {
+                const filtered = exercises.exercises.filter(ex => ex.category.toLowerCase() === category.toLowerCase());
+                displayExercises(filtered);
+            }
+        } catch (error) {
+            const listEl = document.getElementById('exerciseList');
+            if(listEl) listEl.innerHTML = '<p style="color:red">Error loading exercises.</p>';
+        }
+
+        function displayExercises(list) {
+            const container = document.getElementById('exerciseList');
+            if(!container) return;
+            container.innerHTML = '';
+            
+            if (list.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align:center;">No exercises found for this category.</p>';
+                return;
+            }
+
+            list.forEach(ex => {
+                const item = document.createElement('div');
+                item.className = 'glass-card exercise-item';
+                item.onclick = () => {
+                    localStorage.setItem('selected_exercise', JSON.stringify(ex));
+                    if (window.Router) {
+                        window.Router.navigate('practice');
+                    } else {
+                        window.location.href = 'practice.html';
+                    }
+                };
+                
+                item.innerHTML = `
+                    <div>
+                        <h3 style="font-weight: 700; margin-bottom: 4px;">${ex.title}</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-muted);">${ex.text.substring(0, 50)}...</p>
+                    </div>
+                    <span class="ex-badge diff-${ex.difficulty.toLowerCase()}">${ex.difficulty}</span>
+                `;
+                container.appendChild(item);
+            });
+        }
+    })();
+</script>

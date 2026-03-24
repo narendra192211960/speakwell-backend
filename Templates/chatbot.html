@@ -1,0 +1,125 @@
+<style>
+    .chat-container {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 180px);
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .message {
+        max-width: 80%;
+        padding: 16px 20px;
+        border-radius: 20px;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .msg-bot {
+        align-self: flex-start;
+        background: var(--white);
+        color: var(--text-main);
+        border-bottom-left-radius: 4px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+
+    .msg-user {
+        align-self: flex-end;
+        background: var(--primary-gradient);
+        color: white;
+        border-bottom-right-radius: 4px;
+    }
+
+    .chat-input-area {
+        padding: 24px;
+        display: flex;
+        gap: 16px;
+    }
+
+    .chat-input {
+        flex: 1;
+        padding: 16px 24px;
+        border-radius: 16px;
+        border: 1px solid var(--card-border);
+        font-size: 1rem;
+        outline: none;
+    }
+</style>
+
+<div class="main-wrapper">
+    <main class="main-content">
+        <header class="page-header" style="display: flex; align-items: center; gap: 20px;">
+            <button class="back-btn" onclick="window.history.back()" style="background: none; border: none; color: var(--primary); cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <div>
+                <h1 style="font-size: 2rem; font-weight: 800; color: var(--primary-dark);">SpeakWell AI Assistant</h1>
+                <p style="color: var(--text-muted);">How can I help you with your speech journey today?</p>
+            </div>
+        </header>
+
+        <div class="glass-card chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message msg-bot">
+                    Hello! I'm your SpeakWell AI assistant. You can ask me about pronunciation tips, your progress, or how to use the app.
+                </div>
+            </div>
+            
+            <form class="chat-input-area" id="chatForm">
+                <input type="text" id="userInput" class="chat-input" placeholder="Type your message here..." required>
+                <button type="submit" class="btn-primary" style="width: auto; padding: 0 32px;">Send</button>
+            </form>
+        </div>
+    </main>
+</div>
+
+<script>
+    (function initChat() {
+        const chatMessages = document.getElementById('chatMessages');
+        const chatForm = document.getElementById('chatForm');
+        const userInput = document.getElementById('userInput');
+
+        if(chatForm) {
+            chatForm.onsubmit = (e) => {
+                e.preventDefault();
+                const text = userInput.value.trim();
+                if (!text) return;
+
+                addMessage(text, 'user');
+                userInput.value = '';
+
+                // Simulate bot response
+                setTimeout(() => {
+                    const response = getMockResponse(text);
+                    addMessage(response, 'bot');
+                }, 800);
+            };
+        }
+
+        function addMessage(text, type) {
+            if(!chatMessages) return;
+            const msg = document.createElement('div');
+            msg.className = `message msg-${type}`;
+            msg.textContent = text;
+            chatMessages.appendChild(msg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function getMockResponse(input) {
+            const text = input.toLowerCase();
+            if (text.includes('tip') || text.includes('pronounce')) return "Try to record yourself and listen back. Notice the difference between your pronunciation and the target sounds.";
+            if (text.includes('progress')) return "You're doing great! Check your Accuracy Chart in the Progress tab for a detailed breakdown.";
+            if (text.includes('hello') || text.includes('hi')) return "Hi there! Ready for some practice?";
+            return "That's interesting! I'm here to support your speech journey. Any specific goals for today?";
+        }
+    })();
+</script>

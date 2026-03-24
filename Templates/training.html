@@ -1,0 +1,182 @@
+<style>
+    .chips-container { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 20px; margin-bottom: 24px; scrollbar-width: none; }
+    .chips-container::-webkit-scrollbar { display: none; }
+    .chip { padding: 10px 24px; border-radius: 99px; font-size: 0.95rem; font-weight: 700; cursor: pointer; white-space: nowrap; background: white; color: var(--text-muted); border: 2px solid transparent; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .chip:hover { color: var(--primary); background: #f1f5f9; }
+    .chip.active { background: var(--primary); color: white; border-color: var(--primary-light); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); }
+    
+    .exercise-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; padding-bottom: 40px; }
+    .app-card { cursor: pointer; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 24px 16px; gap: 8px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05); }
+    .exercise-card.hidden { display: none; }
+    .ex-icon-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 8px; }
+    .ex-title { font-size: 1.1rem; font-weight: 800; color: var(--primary-dark); line-height: 1.2; height: 2.4em; display: flex; align-items: center; justify-content: center; }
+    .stat-accuracy { margin-top: 8px; font-size: 0.9rem; font-weight: 700; }
+    .stat-words { font-size: 0.8rem; margin-bottom: 16px; }
+    .btn-app-start { color: white; width: 100%; padding: 12px; border-radius: 12px; font-weight: 800; margin-top: auto; transition: opacity 0.2s; }
+    
+    .bg-blue { background: #e0e7ff; color: #2E86DE; } .text-blue { color: #2E86DE; } .bg-blue.btn-app-start { background: #2E86DE; color: white !important; }
+    .bg-green { background: #dcfce7; color: #27AE60; } .text-green { color: #27AE60; } .bg-green.btn-app-start { background: #27AE60; color: white !important; }
+    .bg-purple { background: #f3e8ff; color: #8E44AD; } .text-purple { color: #8E44AD; } .bg-purple.btn-app-start { background: #8E44AD; color: white !important; }
+    .bg-orange { background: #ffedd5; color: #E67E22; } .text-orange { color: #E67E22; } .bg-orange.btn-app-start { background: #E67E22; color: white !important; }
+    .bg-skyblue { background: #e0f2fe; color: #3498DB; } .text-skyblue { color: #3498DB; } .bg-skyblue.btn-app-start { background: #3498DB; color: white !important; }
+    .bg-deeporange { background: #ffebd6; color: #D35400; } .text-deeporange { color: #D35400; } .bg-deeporange.btn-app-start { background: #D35400; color: white !important; }
+    .bg-violet { background: #f3e8ff; color: #9B59B6; } .text-violet { color: #9B59B6; } .bg-violet.btn-app-start { background: #9B59B6; color: white !important; }
+    .bg-crimson { background: #ffe4e6; color: #C0392B; } .text-crimson { color: #C0392B; } .bg-crimson.btn-app-start { background: #C0392B; color: white !important; }
+    .bg-teal { background: #ccfbf1; color: #16A085; } .text-teal { color: #16A085; } .bg-teal.btn-app-start { background: #16A085; color: white !important; }
+    .bg-red { background: #fee2e2; color: #E74C3C; } .text-red { color: #E74C3C; } .bg-red.btn-app-start { background: #E74C3C; color: white !important; }
+</style>
+
+<div class="main-wrapper">
+    <main class="main-content">
+        <header class="page-header" style="margin-bottom: 24px;">
+            <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--primary-dark);">Speech Training</h1>
+            <p style="color: var(--text-muted);">Choose an exercise to practice. AI will analyze your pronunciation in real-time.</p>
+        </header>
+
+        <div class="chips-container" id="categoryChips">
+            <div class="chip active" data-filter="all">All</div>
+            <div class="chip" data-filter="vowels">Vowels</div>
+            <div class="chip" data-filter="words">Words</div>
+            <div class="chip" data-filter="numbers">Numbers</div>
+            <div class="chip" data-filter="consonants">Consonants</div>
+            <div class="chip" data-filter="sentences">Sentences</div>
+            <div class="chip" data-filter="fluency">Fluency</div>
+            <div class="chip" data-filter="paragraphs">Paragraphs</div>
+            <div class="chip" data-filter="self_exercise">Self Exercise</div>
+        </div>
+
+        <div class="exercise-grid" id="exerciseGrid" style="gap: 16px;">
+            <div class="exercise-card glass-card app-card" data-category="vowels" onclick="startCategory('vowels')">
+                <div class="ex-icon-circle bg-blue"><span class="emoji">🔊</span></div>
+                <h3 class="ex-title">Basic Vowel<br>Sounds</h3>
+                <div class="stat-accuracy text-blue" data-ex="Basic Vowel Sounds">Avg Accuracy: 0%</div>
+                <div class="stat-words text-blue" data-ex="Basic Vowel Sounds">Words Practiced: 0</div>
+                <div class="btn-app-start bg-blue">Start</div>
+            </div>
+            <div class="exercise-card glass-card app-card" data-category="words" onclick="startCategory('words')">
+                <div class="ex-icon-circle bg-green"><span class="emoji">💬</span></div>
+                <h3 class="ex-title">Simple<br>Words</h3>
+                <div class="stat-accuracy text-green" data-ex="Simple Words - Daily Life">Avg Accuracy: 0%</div>
+                <div class="stat-words text-green" data-ex="Simple Words - Daily Life">Words Practiced: 0</div>
+                <div class="btn-app-start bg-green">Start</div>
+            </div>
+            <div class="exercise-card glass-card app-card" data-category="numbers" onclick="startCategory('numbers')">
+                <div class="ex-icon-circle bg-purple"><span class="emoji">🔢</span></div>
+                <h3 class="ex-title">Numbers<br>1–10</h3>
+                <div class="stat-accuracy text-purple" data-ex="Numbers 1-10">Avg Accuracy: 0%</div>
+                <div class="stat-words text-purple" data-ex="Numbers 1-10">Words Practiced: 0</div>
+                <div class="btn-app-start bg-purple">Start</div>
+            </div>
+            <div class="exercise-card glass-card app-card" data-category="consonants" onclick="startCategory('consonants')">
+                <div class="ex-icon-circle bg-orange"><span class="emoji">👂</span></div>
+                <h3 class="ex-title">R and L<br>Sounds</h3>
+                <div class="stat-accuracy text-orange" data-ex="R and L Sounds">Avg Accuracy: 0%</div>
+                <div class="stat-words text-orange" data-ex="R and L Sounds">Words Practiced: 0</div>
+                <div class="btn-app-start bg-orange">Start</div>
+            </div>
+            <div class="exercise-card glass-card app-card" data-category="sentences" onclick="startCategory('sentences')">
+                <div class="ex-icon-circle bg-skyblue"><span class="emoji">📝</span></div>
+                <h3 class="ex-title">Short<br>Sentences</h3>
+                <div class="stat-accuracy text-skyblue" data-ex="Short Sentences">Avg Accuracy: 0%</div>
+                <div class="stat-words text-skyblue" data-ex="Short Sentences">Words Practiced: 0</div>
+                <div class="btn-app-start bg-skyblue">Start</div>
+            </div>
+            <div class="exercise-card glass-card app-card" data-category="consonants" onclick="startCategory('consonants')">
+                <div class="ex-icon-circle bg-deeporange"><span class="emoji">📢</span></div>
+                <h3 class="ex-title">TH Sound<br>Practice</h3>
+                <div class="stat-accuracy text-deeporange" data-ex="TH Sound Practice">Avg Accuracy: 0%</div>
+                <div class="stat-words text-deeporange" data-ex="TH Sound Practice">Words Practiced: 0</div>
+                <div class="btn-app-start bg-deeporange">Start</div>
+            </div>
+            <div class="exercise-card glass-card app-card" data-category="sentences" onclick="startCategory('sentences')">
+                <div class="ex-icon-circle bg-skyblue"><span class="emoji">📚</span></div>
+                <h3 class="ex-title">Complex<br>Sentences</h3>
+                <div class="stat-accuracy text-skyblue" data-ex="Complex Sentences">Avg Accuracy: 0%</div>
+                <div class="stat-words text-skyblue" data-ex="Complex Sentences">Words Practiced: 0</div>
+                <div class="btn-app-start bg-skyblue">Start</div>
+            </div>
+            <div class="exercise-card glass-card app-card" data-category="fluency" onclick="startCategory('fluency')">
+                <div class="ex-icon-circle bg-violet"><span class="emoji">📈</span></div>
+                <h3 class="ex-title">Tongue<br>Twisters</h3>
+                <div class="stat-accuracy text-violet" data-ex="Tongue Twisters">Avg Accuracy: 0%</div>
+                <div class="stat-words text-violet" data-ex="Tongue Twisters">Words Practiced: 0</div>
+                <div class="btn-app-start bg-violet">Start</div>
+            </div>
+            <div class="exercise-card glass-card app-card" data-category="words" onclick="startCategory('words')">
+                <div class="ex-icon-circle bg-crimson"><span class="emoji">❤️</span></div>
+                <h3 class="ex-title">Medical<br>Terminology</h3>
+                <div class="stat-accuracy text-crimson" data-ex="Medical Terminology">Avg Accuracy: 0%</div>
+                <div class="stat-words text-crimson" data-ex="Medical Terminology">Words Practiced: 0</div>
+                <div class="btn-app-start bg-crimson">Start</div>
+            </div>
+            <div class="exercise-card glass-card app-card" data-category="paragraphs" onclick="startCategory('paragraphs')">
+                <div class="ex-icon-circle bg-teal"><span class="emoji">📄</span></div>
+                <h3 class="ex-title">Paragraph<br>Reading</h3>
+                <div class="stat-accuracy text-teal" data-ex="Paragraph Reading">Avg Accuracy: 0%</div>
+                <div class="stat-words text-teal" data-ex="Paragraph Reading">Words Practiced: 0</div>
+                <div class="btn-app-start bg-teal">Start</div>
+            </div>
+            <div class="exercise-card glass-card app-card" data-category="self_exercise" onclick="startCategory('self_exercise')">
+                <div class="ex-icon-circle bg-red"><span class="emoji">🎤</span></div>
+                <h3 class="ex-title">Self<br>Exercise</h3>
+                <div class="stat-accuracy text-red" data-ex="Self Exercise">Avg Accuracy: 0%</div>
+                <div class="stat-words text-red" data-ex="Self Exercise">Words Practiced: 0</div>
+                <div class="btn-app-start bg-red">Start</div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    (function initTraining() {
+        const chips = document.querySelectorAll('.chip');
+        const cards = document.querySelectorAll('.exercise-card');
+        chips.forEach(chip => {
+            chip.onclick = () => {
+                chips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                const filter = chip.dataset.filter;
+                cards.forEach(card => {
+                    if (filter === 'all' || card.dataset.category === filter) card.style.display = 'flex';
+                    else card.style.display = 'none';
+                });
+            };
+        });
+
+        const fetchStats = async () => {
+            if (typeof API === 'undefined') return;
+            let userId = null;
+            try {
+                const ud = JSON.parse(localStorage.getItem('user_data'));
+                if (ud && ud.id) userId = ud.id;
+            } catch(e){}
+            if (!userId) return;
+            try {
+                const res = await API.getExerciseStats(userId);
+                if (res.status === 'success' && res.exercise_stats) {
+                    for (const [name, stat] of Object.entries(res.exercise_stats)) {
+                        document.querySelectorAll('.stat-accuracy[data-ex="' + name + '"]').forEach(el => {
+                            el.textContent = 'Avg Accuracy: ' + stat.avg_accuracy + '%';
+                        });
+                        document.querySelectorAll('.stat-words[data-ex="' + name + '"]').forEach(el => {
+                            el.textContent = 'Words Practiced: ' + stat.words_practiced;
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error('Error fetching exercise stats:', e);
+            }
+        };
+        setTimeout(fetchStats, 100);
+    })();
+
+    function startCategory(cat) {
+        localStorage.setItem('selected_category', cat);
+        if (window.Router) {
+            window.Router.navigate('practice');
+        } else {
+            window.location.href = 'exercise.html';
+        }
+    }
+</script>
+<script src="../js/API.js"></script>

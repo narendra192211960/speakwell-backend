@@ -1,0 +1,399 @@
+<div class="main-wrapper">
+    <main class="main-content" style="background-color: #f2eeeb; min-height: 100vh;">
+        <header
+            style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 48px; padding-top: 20px; position: relative;">
+            <div>
+                <h1 id="greetingMessage"
+                    style="font-size: 4rem; font-weight: 800; color: #1e293b; margin-bottom: 12px; letter-spacing: -0.02em;">
+                    Good Afternoon!</h1>
+                <div style="font-size: 1.75rem; color: #64748b; font-weight: 500; line-height: 1.4;">
+                    Welcome back,<br>
+                    <span id="welcomeUserName">Narendra</span>
+                </div>
+            </div>
+            <a href="#" id="home-profile-link"
+                onclick="event.preventDefault(); window.Router?Router.navigate('settings'):window.location.href='settings.html'"
+                style="width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; text-decoration: none; position: absolute; top: 20px; right: 0; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 3px solid white;">
+                <!-- Default blue Google-style avatar -->
+                <div id="home-default-avatar"
+                    style="width: 100%; height: 100%; border-radius: 50%; background: #2563eb; display: flex; align-items: center; justify-content: center; position: absolute; top: 0; left: 0; z-index: 1;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" style="fill: #ffffff; display: block;">
+                        <path
+                            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                </div>
+                <img id="home-user-profile-img" src="" alt="Profile"
+                    style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: none; position: absolute; top: 0; left: 0; z-index: 2;">
+                <script>
+                    (function () {
+                        const picUrl = localStorage.getItem('user_profile_picture');
+                        if (picUrl && picUrl !== 'null' && picUrl !== 'undefined') {
+                            const img = document.getElementById('home-user-profile-img');
+                            const def = document.getElementById('home-default-avatar');
+                            if (img && def) {
+                                const BASE = (typeof window.BASE_URL !== 'undefined') ? window.BASE_URL : 'http://180.235.121.253:8071';
+                                const fullUrl = picUrl.startsWith('http') ? picUrl : (BASE + (picUrl.startsWith('/') ? picUrl.slice(1) : picUrl));
+                                img.onerror = () => {
+                                    img.style.display = 'none';
+                                    def.style.display = 'flex';
+                                };
+                                img.src = fullUrl;
+                                img.style.display = 'block';
+                                def.style.display = 'none';
+                            }
+                        }
+                    })();
+                </script>
+            </a>
+        </header>
+
+        <!-- Training Tips Header -->
+        <div style="margin-bottom: 40px;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
+                <div style="color: #f59e0b; display: flex; align-items: center; justify-content: center;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9.663 17h4.674"></path>
+                        <path d="M10 20h4"></path>
+                        <path d="M12 2v1"></path>
+                        <path d="M12 17v1"></path>
+                        <path d="M22 12h-1"></path>
+                        <path d="M3 12H2"></path>
+                        <path d="M20 7l-.707.707"></path>
+                        <path d="M4.707 19.293l-.707.707"></path>
+                        <path d="M4.707 4.707l.707.707"></path>
+                        <path d="M19.293 19.293l.707.707"></path>
+                        <path d="M15.42 15.42a4 4 0 1 1-6.84 0"></path>
+                    </svg>
+                </div>
+                <h2 style="font-size: 2.25rem; font-weight: 800; color: #1e293b;">Training Tips</h2>
+            </div>
+            <p style="font-size: 1.25rem; color: #64748b; font-weight: 500;">Follow these tips for effective speech
+                rehabilitation practice</p>
+        </div>
+
+        <style>
+            .tip-card {
+                padding: 24px;
+                display: flex;
+                gap: 20px;
+                align-items: flex-start;
+                border: 1px solid var(--border-color);
+                transition: all 0.3s ease;
+            }
+
+            .tip-card:hover {
+                transform: translateY(-5px);
+            }
+
+            .tip-icon {
+                width: 48px;
+                height: 48px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                flex-shrink: 0;
+            }
+
+            /* Themed Tip Borders and Icons */
+            .tip-card.t-quiet {
+                border-color: rgba(239, 68, 68, 0.8);
+            }
+
+            .tip-card.t-quiet:hover {
+                border-color: rgba(239, 68, 68, 1.0);
+            }
+
+            .tip-card.t-quiet .tip-icon {
+                background: rgba(239, 68, 68, 0.1);
+                color: #ef4444;
+            }
+
+            .tip-card.t-mic {
+                border-color: rgba(71, 85, 105, 0.8);
+            }
+
+            .tip-card.t-mic:hover {
+                border-color: rgba(71, 85, 105, 1.0);
+            }
+
+            .tip-card.t-mic .tip-icon {
+                background: rgba(71, 85, 105, 0.1);
+                color: #475569;
+            }
+
+            .tip-card.t-daily {
+                border-color: rgba(239, 68, 68, 0.8);
+            }
+
+            .tip-card.t-daily:hover {
+                border-color: rgba(239, 68, 68, 1.0);
+            }
+
+            .tip-card.t-daily .tip-icon {
+                background: rgba(239, 68, 68, 0.1);
+                color: #ef4444;
+            }
+
+            .tip-card.t-warm {
+                border-color: rgba(15, 23, 42, 0.8);
+            }
+
+            .tip-card.t-warm:hover {
+                border-color: rgba(15, 23, 42, 1.0);
+            }
+
+            .tip-card.t-warm .tip-icon {
+                background: rgba(15, 23, 42, 0.1);
+                color: #0f172a;
+            }
+
+            .tip-card.t-listen {
+                border-color: rgba(245, 158, 11, 0.8);
+            }
+
+            .tip-card.t-listen:hover {
+                border-color: rgba(245, 158, 11, 1.0);
+            }
+
+            .tip-card.t-listen .tip-icon {
+                background: rgba(245, 158, 11, 0.1);
+                color: #f59e0b;
+            }
+
+            .tip-card.t-water {
+                border-color: rgba(96, 165, 250, 0.8);
+            }
+
+            .tip-card.t-water:hover {
+                border-color: rgba(96, 165, 250, 1.0);
+            }
+
+            .tip-card.t-water .tip-icon {
+                background: rgba(96, 165, 250, 0.1);
+                color: #60a5fa;
+            }
+
+            .tip-card.t-rush {
+                border-color: rgba(101, 163, 13, 0.8);
+            }
+
+            .tip-card.t-rush:hover {
+                border-color: rgba(101, 163, 13, 1.0);
+            }
+
+            .tip-card.t-rush .tip-icon {
+                background: rgba(101, 163, 13, 0.1);
+                color: #65a30d;
+            }
+
+            .tip-card.t-track {
+                border-color: rgba(22, 163, 74, 0.8);
+            }
+
+            .tip-card.t-track:hover {
+                border-color: rgba(22, 163, 74, 1.0);
+            }
+
+            .tip-card.t-track .tip-icon {
+                background: rgba(22, 163, 74, 0.1);
+                color: #16a34a;
+            }
+
+            .tip-card.t-patient {
+                border-color: rgba(245, 158, 11, 0.8);
+            }
+
+            .tip-card.t-patient:hover {
+                border-color: rgba(245, 158, 11, 1.0);
+            }
+
+            .tip-card.t-patient .tip-icon {
+                background: rgba(245, 158, 11, 0.1);
+                color: #f59e0b;
+            }
+
+            .tip-card.t-reminders {
+                border-color: rgba(146, 64, 14, 0.8);
+            }
+
+            .tip-card.t-reminders:hover {
+                border-color: rgba(146, 64, 14, 1.0);
+            }
+
+            .tip-card.t-reminders .tip-icon {
+                background: rgba(146, 64, 14, 0.1);
+                color: #92400e;
+            }
+        </style>
+
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin-bottom: 48px;">
+            <div class="glass-card tip-card t-quiet">
+                <div class="tip-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
+                        <line x1="23" y1="9" x2="17" y2="15"></line>
+                        <line x1="17" y1="9" x2="23" y2="15"></line>
+                    </svg>
+                </div>
+                <div>
+                    <h4 style="font-weight: 700; margin-bottom: 4px;">Quiet Place</h4>
+                    <p style="font-size: 1rem; color: var(--text-muted);">Find a calm environment for better AI voice
+                        analysis feedback.</p>
+                </div>
+            </div>
+            <div class="glass-card tip-card t-mic">
+                <div class="tip-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v1a7 7 0 0 1-14 0v-1"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                        <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                </div>
+                <div>
+                    <h4 style="font-weight: 700; margin-bottom: 4px;">Good Mic</h4>
+                    <p style="font-size: 1rem; color: var(--text-muted);">Ensure your device microphone is clear and
+                        working properly.</p>
+                </div>
+            </div>
+            <div class="glass-card tip-card t-daily">
+                <div class="tip-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <div>
+                    <h4 style="font-weight: 700; margin-bottom: 4px;">Daily Practice</h4>
+                    <p style="font-size: 1rem; color: var(--text-muted);">Consistent 10-15 min sessions daily are most
+                        effective for progress.</p>
+                </div>
+            </div>
+            <div class="glass-card tip-card t-warm">
+                <div class="tip-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 10a4 4 0 0 1 4-4c2.21 0 5 2.76 5 4s-2.79 4-5 4a4 4 0 0 1-4-4z"></path>
+                        <path d="M22 10a4 4 0 0 0-4-4c-2.21 0-5 2.76-5 4s2.79 4 5 4a4 4 0 0 0 4-4z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h4 style="font-weight: 700; margin-bottom: 4px;">Warm Up</h4>
+                    <p style="font-size: 1rem; color: var(--text-muted);">Do simple vocal exercises to relax your jaw
+                        before starting.</p>
+                </div>
+            </div>
+            <div class="glass-card tip-card t-listen">
+                <div class="tip-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2a5 5 0 0 1 5 5v13a4 4 0 0 1-8 0V7a5 5 0 0 1 5-5z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h4 style="font-weight: 700; margin-bottom: 4px;">Listen Carefully</h4>
+                    <p style="font-size: 1rem; color: var(--text-muted);">Listen to pronunciation examples multiple
+                        times before speaking.</p>
+                </div>
+            </div>
+            <div class="glass-card tip-card t-water">
+                <div class="tip-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h4 style="font-weight: 700; margin-bottom: 4px;">Stay Hydrated</h4>
+                    <p style="font-size: 1rem; color: var(--text-muted);">A hydrated throat produces clearer sounds and
+                        reduces strain.</p>
+                </div>
+            </div>
+            <div class="glass-card tip-card t-rush">
+                <div class="tip-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
+                        </path>
+                    </svg>
+                </div>
+                <div>
+                    <h4 style="font-weight: 700; margin-bottom: 4px;">Don't Rush</h4>
+                    <p style="font-size: 1rem; color: var(--text-muted);">Speak slowly and focus on proper articulation
+                        correctly.</p>
+                </div>
+            </div>
+            <div class="glass-card tip-card t-track">
+                <div class="tip-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                        <polyline points="16 7 22 7 22 13"></polyline>
+                    </svg>
+                </div>
+                <div>
+                    <h4 style="font-weight: 700; margin-bottom: 4px;">Track Progress</h4>
+                    <p style="font-size: 1rem; color: var(--text-muted);">Review your accuracy scores to celebrate small
+                        wins daily.</p>
+                </div>
+            </div>
+            <div class="glass-card tip-card t-patient">
+                <div class="tip-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l9.19-9.19 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                        </path>
+                    </svg>
+                </div>
+                <div>
+                    <h4 style="font-weight: 700; margin-bottom: 4px;">Be Patient</h4>
+                    <p style="font-size: 1rem; color: var(--text-muted);">Improvement takes time. Stay positive and keep
+                        going!</p>
+                </div>
+            </div>
+            <div class="glass-card tip-card t-reminders">
+                <div class="tip-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h4 style="font-weight: 700; margin-bottom: 4px;">Reminders</h4>
+                    <p style="font-size: 1rem; color: var(--text-muted);">Set consistency by using scheduled practice
+                        reminders.</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
+            <button class="btn-primary"
+                style="padding: 18px 60px; font-size: 1.2rem; font-weight: 800; border-radius: 20px; width: auto;"
+                onclick="window.Router?Router.navigate('training'):window.location.href='training.html'">
+                Start Training
+            </button>
+        </div>
+    </main>
+</div>
+
+<script src="../js/home.js"></script>
+<script>
+    // Re-bind dynamic links inside the fragment
+    document.querySelectorAll('[data-page]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const page = e.currentTarget.getAttribute('data-page');
+            if (window.Router) window.Router.navigate(page);
+        });
+    });
+</script>

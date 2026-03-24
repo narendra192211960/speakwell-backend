@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP - SpeakWell</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="glass-card auth-card">
+            <div class="auth-header">
+                <h1>Verify OTP</h1>
+                <p id="otpInstruction" style="color: var(--text-muted);">Enter the 6-digit code sent to your email</p>
+            </div>
+
+            <div id="alert" class="alert"></div>
+
+            <form id="otpForm">
+                <div class="form-group" style="margin-bottom: 32px;">
+                    <input type="text" id="otp" class="form-control" placeholder="000000" maxlength="6" 
+                           style="text-align: center; font-size: 2rem; letter-spacing: 12px; font-weight: 800;" required>
+                </div>
+                <button type="submit" class="btn-primary" id="verifyBtn">Verify & Create Account</button>
+            </form>
+
+            <div style="text-align: center; margin-top: 24px; font-size: 0.95rem; color: var(--text-muted);">
+                Didn't receive the code? <button id="resendBtn" style="background: none; border: none; color: var(--primary); font-weight: 700; cursor: pointer; padding: 0;">Resend OTP</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/validation.js"></script>
+    <script>
+        const pendingData = JSON.parse(sessionStorage.getItem('pending_signup'));
+        if (!pendingData) window.location.href = 'signup.html';
+
+        document.getElementById('otpInstruction').textContent = `Enter the 6-digit code sent to ${pendingData.email}`;
+
+        document.getElementById('otpForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const otp = document.getElementById('otp').value;
+            
+            if (!Validation.otp(otp)) return showAlert('Please enter a 6-digit numeric code.', 'error');
+
+            const btn = document.getElementById('verifyBtn');
+            try {
+                btn.disabled = true;
+                btn.textContent = 'Verifying...';
+                
+                // 1. Verify OTP using email
+                const verifyRes = await API.verifyOtp(pendingData.email, otp);
+                
+                if (verifyRes.status === 'success') {
+                    // 2. Finalize Signup
+                    btn.textContent = 'Creating Account...';
+                    const signupRes = await API.signup(
+                        pendingData.name, 
+                        pendingData.email, 
+                        pendingData.phone, 
+                        pendingData.age, 
+                        pendingData.password
+                    );
+
+                    if (signupRes.status === 'success') {
+                        localStorage.setItem('user_id', signupRes.user_id);
+                        localStorage.setItem('user_name', signupRes.user_name);
+                        sessionStorage.removeItem('pending_signup');
+                        showAlert('Account created successfully!', 'success');
+                        setTimeout(() => window.location.href = 'main.html?page=home', 1500);
+                    } else {
+                        showAlert(signupRes.message || 'Error creating account.', 'error');
+                    }
+                } else {
+                    showAlert(verifyRes.message || 'Invalid OTP.', 'error');
+                }
+            } catch (error) {
+                showAlert('Network error occurred.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Verify & Create Account';
+            }
+        });
+
+        document.getElementById('resendBtn').addEventListener('click', async () => {
+             const resendBtn = document.getElementById('resendBtn');
+             resendBtn.disabled = true;
+             resendBtn.textContent = 'Sending...';
+             try {
+                 const res = await API.sendOtp(pendingData.email);
+                 if(res.status === 'success') showAlert('OTP resent successfully!', 'success');
+                 else showAlert(res.message || 'Error resending OTP.', 'error');
+             } catch(e) {
+                 showAlert('Error resending OTP.', 'error');
+             }
+             setTimeout(() => { resendBtn.disabled = false; resendBtn.textContent = 'Resend OTP'; }, 5000);
+        });
+
+        function showAlert(msg, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = msg;
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'block';
+            alert.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    </script>
+</body>
+</html>

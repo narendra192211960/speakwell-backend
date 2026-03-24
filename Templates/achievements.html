@@ -1,0 +1,104 @@
+<style>
+    .badge-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 24px;
+    }
+
+    .badge-card {
+        padding: 32px 20px;
+        text-align: center;
+        opacity: 0.5;
+        filter: grayscale(100%);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .badge-card.unlocked {
+        opacity: 1;
+        filter: grayscale(0%);
+        transform: scale(1.05);
+        border-color: var(--primary);
+        box-shadow: 0 15px 35px -10px rgba(99, 102, 241, 0.3);
+    }
+
+    .badge-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    .badge-title {
+        font-weight: 800;
+        margin-bottom: 4px;
+    }
+
+    .badge-desc {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        line-height: 1.4;
+    }
+</style>
+
+<div class="main-wrapper">
+    <main class="main-content">
+        <header class="page-header" style="display: flex; align-items: center; gap: 20px;">
+            <button class="back-btn" onclick="window.history.back()">
+
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <div>
+                <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--primary-dark);">Your Achievements</h1>
+                <p style="color: var(--text-muted);">Unlock milestones as you progress in your training.</p>
+            </div>
+        </header>
+
+        <div class="badge-grid" id="badgeGrid">
+            <div style="text-align: center; padding: 40px; color: var(--text-muted);">Loading badges...</div>
+        </div>
+    </main>
+</div>
+
+<script>
+    (async function initAchievements() {
+        const userId = Auth.getUserId();
+        if (!userId) return;
+
+        try {
+            const res = await API.getAchievements(userId);
+            if (res.status === 'success') {
+                displayBadges(res.achievements);
+            }
+        } catch (error) {
+            console.error('Error loading achievements:', error);
+        }
+
+        function displayBadges(achievements) {
+            const container = document.getElementById('badgeGrid');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const allBadges = [
+                { id: 'first_step', title: 'First Step', desc: 'Complete your first exercise', icon: '🌱' },
+                { id: 'streak_3', title: 'Consistency', desc: 'Maintain a 3-day streak', icon: '🔥' },
+                { id: 'accuracy_pro', title: 'Accuracy Pro', desc: 'Reach 95% accuracy in a session', icon: '🎯' },
+                { id: 'marathoner', title: 'Speech Marathoner', desc: 'Practice for 60 minutes total', icon: '🏃' },
+                { id: 'multitasking', title: 'Versatile Speaker', desc: 'Complete exercises in 3 categories', icon: '🌈' },
+                { id: 'master', title: 'Master Orator', desc: 'Complete 50 sessions', icon: '👑' }
+            ];
+
+            allBadges.forEach(badge => {
+                const isUnlocked = achievements.some(a => a.id === badge.id || a.title === badge.title);
+                const card = document.createElement('div');
+                card.className = `glass-card badge-card ${isUnlocked ? 'unlocked' : ''}`;
+                card.innerHTML = `
+                    <span class="badge-icon">${badge.icon}</span>
+                    <h4 class="badge-title">${badge.title}</h4>
+                    <p class="badge-desc">${badge.desc}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+    })();
+</script>

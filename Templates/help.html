@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeakWell - Help & FAQs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #6366F1;
+            --bg-body: #F3F4F6;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --surface: #FFFFFF;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            margin-bottom: 32px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-light);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .help-icon-circle {
+            width: 48px;
+            height: 48px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header-content h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 0;
+            color: #111827;
+        }
+
+        /* Sections */
+        .section-label {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 40px 0 16px 0;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 32px;
+        }
+
+        /* Accordion */
+        .faq-item {
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 16px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            text-align: left;
+        }
+
+        .faq-header span {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+            padding-right: 12px;
+        }
+
+        .arrow-icon {
+            color: var(--text-muted);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .arrow-icon {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            padding: 0 16px;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            padding-bottom: 20px;
+        }
+
+        /* Resources Row */
+        .resource-row {
+            display: flex;
+            align-items: center;
+            padding: 20px 16px;
+            gap: 16px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .resource-icon {
+            color: var(--primary-light);
+        }
+
+        .resource-title {
+            flex: 1;
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        /* Support Section */
+        .support-card {
+            padding: 32px 24px;
+        }
+
+        .support-text {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .support-email {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .email-address {
+            color: var(--primary);
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .btn-send {
+            width: 100%;
+            background-color: var(--primary-light);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-send:hover {
+            background-color: var(--primary);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px;
+            }
+
+            .header-content h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <button onclick="window.history.back()" class="back-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+                Back
+            </button>
+            <div class="header-content">
+                <div class="help-icon-circle">?</div>
+                <h1>Help & FAQs</h1>
+            </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="section-label">Frequently Asked Questions</div>
+        <div class="card">
+            <div class="faq-item">
+                <button class="faq-header" onclick="toggleFaq(this)">
+                    <span>How do I start my first exercise?</span>
+                    <svg class="arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    Go to the Training tab, select an exercise category, and tap "Start Session".
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-header" onclick="toggleFaq(this)">
+                    <span>Why is my microphone not working?</span>
+                    <svg class="arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    Check your browser permissions and ensure microphone access is enabled for this app.
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-header" onclick="toggleFaq(this)">
+                    <span>Can I use the app offline?</span>
+                    <svg class="arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    No. The app requires an active internet connection to process speech and save progress.
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-header" onclick="toggleFaq(this)">
+                    <span>How is my accuracy calculated?</span>
+                    <svg class="arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    AI analyzes your pronunciation and compares it with correct patterns to generate accuracy scores.
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-header" onclick="toggleFaq(this)">
+                    <span>How long should I practice daily?</span>
+                    <svg class="arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    We recommend 10-15 minutes daily for best results. Consistency is key!
+                </div>
+            </div>
+        </div>
+
+        <!-- Resources -->
+        <div class="section-label">Resources</div>
+        <div class="card">
+            <a href="main.html" class="resource-row">
+                <svg class="resource-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                    <polyline points="10 9 9 9 8 9" />
+                </svg>
+                <span class="resource-title">Training Tips</span>
+                <svg class="arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18l6-6-6-6" />
+                </svg>
+            </a>
+        </div>
+
+        <!-- Email Support -->
+        <div class="section-label">Email Support</div>
+        <div class="card support-card">
+            <div class="support-text">
+                If you have any questions, issues, or feedback about the app, you can contact our support team through
+                email.
+            </div>
+            <div class="support-email">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-light);">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                    <polyline points="22,6 12,13 2,6" />
+                </svg>
+                <span class="email-address">aispeakwell@gmail.com</span>
+            </div>
+            <button onclick="location.href='mailto:aispeakwell@gmail.com'" class="btn-send">Send Email</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleFaq(btn) {
+            const item = btn.parentElement;
+            const isActive = item.classList.contains('active');
+
+            // Close all others
+            document.querySelectorAll('.faq-item').forEach(i => {
+                i.classList.remove('active');
+            });
+
+            // Toggle current
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        }
+    </script>
+</body>
+
+</html>
